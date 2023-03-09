@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "comfy-beds",
 	"version": "${version}",
-	"name": "Comfy Beds",
+	"name": "Comfy-Beds",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -26,12 +26,10 @@
 		"comfy-beds.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.14.17",
-		"minecraft": "~1.19.3",
-		"java": ">=17",
-		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
+        "fabricloader": ">=0.14.14",
+        "minecraft": "~1.19.3",
+        "java": ">=17",
+        "fabric-api": ">=0.74.0+1.19.3",
+        "midnightlib": ">=1.1.0-fabric"
 	}
 }

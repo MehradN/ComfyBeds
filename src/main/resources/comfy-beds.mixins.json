@@ -3,6 +3,9 @@
   "package": "ir.mehradn.comfybeds.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "PlayerMixin",
+    "ServerLevelMixin",
+    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
