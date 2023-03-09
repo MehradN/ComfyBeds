@@ -1,6 +1,7 @@
 package ir.mehradn.comfybeds;
 
 import ir.mehradn.comfybeds.config.ComfyBedsConfig;
+import ir.mehradn.comfybeds.event.SetSpawnBedCommand;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -11,5 +12,6 @@ public class ComfyBedsMod implements ModInitializer {
 
 	public void onInitialize() {
         ComfyBedsConfig.register();
+        SetSpawnBedCommand.register();
 	}
 }
