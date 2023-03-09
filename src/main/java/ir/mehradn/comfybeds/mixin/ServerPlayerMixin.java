@@ -8,6 +8,7 @@ import ir.mehradn.comfybeds.config.ComfyBedsConfig;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Player;
@@ -16,10 +17,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
+    private boolean falseSleeping = false;
+
     @Shadow public abstract void displayClientMessage(Component chatComponent, boolean actionBar);
 
     @Shadow public abstract void sendSystemMessage(Component component);
@@ -44,6 +48,20 @@ public abstract class ServerPlayerMixin extends Player {
     @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;isDay()Z"))
     private boolean disableDayRequirement(boolean isDay) {
         return !ComfyBedsConfig.allowSleepAtDay() && isDay;
+    }
+
+    @Inject(method = "tick", at = @At("RETURN"))
+    private void fixFalseSleeping(CallbackInfo ci) {
+        if (this.falseSleeping && !this.level.isDay()) {
+            ((ServerLevel)this.level).updateSleepingPlayerList();
+            this.falseSleeping = false;
+        }
+    }
+
+    @Inject(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;updateSleepingPlayerList()V"))
+    private void setFalseSleeping(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
+        if (this.level.isDay())
+            this.falseSleeping = true;
     }
 
     @Inject(method = "startSleepInBed", at = @At("RETURN"))
