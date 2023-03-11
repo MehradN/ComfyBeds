@@ -5,11 +5,16 @@
   "comfy-beds.command.notShiftClick": "Use a bed while sneaking to rest without setting your respawn point",
   "comfy-beds.command.here": "here",
   "comfy-beds.command.clickHere": "Click %s to set your respawn point",
+  "comfy-beds.command.no_bed": "You cannot use a bed to set your spawn here",
   "comfy-beds.midnightconfig.title": "Comfy-Beds Options",
   "comfy-beds.midnightconfig.allowRestAtDay": "Allow Resting During Day:",
   "comfy-beds.midnightconfig.changeRespawn": "Changing Respawn Point:",
+  "comfy-beds.midnightconfig.outsideOverworld": "Beds Outside Overworld:",
   "comfy-beds.midnightconfig.enum.ChangeRespawn.NORMAL": "Normal",
   "comfy-beds.midnightconfig.enum.ChangeRespawn.COMMAND": "/setbed",
   "comfy-beds.midnightconfig.enum.ChangeRespawn.SHIFT_CLICK": "Shift Click",
-  "comfy-beds.midnightconfig.enum.ChangeRespawn.NOT_SHIFT_CLICK": "Don't Shift Click"
+  "comfy-beds.midnightconfig.enum.ChangeRespawn.NOT_SHIFT_CLICK": "Don't Shift Click",
+  "comfy-beds.midnightconfig.enum.OutsideOverworld.EXPLODE": "Explode",
+  "comfy-beds.midnightconfig.enum.OutsideOverworld.MONSTERS": "Monsters Nearby",
+  "comfy-beds.midnightconfig.enum.OutsideOverworld.REST": "Rest"
 }

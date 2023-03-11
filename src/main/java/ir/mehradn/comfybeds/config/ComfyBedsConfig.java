@@ -41,11 +41,26 @@ public final class ComfyBedsConfig {
         return Component.empty();
     }
 
+    public static OutsideOverworld getOutsideOverworld() {
+        switch (_ComfyBedsConfig.outsideOverworld) {
+            case EXPLODE -> { return OutsideOverworld.EXPLODE; }
+            case MONSTERS -> { return OutsideOverworld.MONSTERS; }
+            case REST -> { return OutsideOverworld.REST; }
+        }
+        return OutsideOverworld.EXPLODE;
+    }
+
     public enum ChangeRespawn {
         NORMAL,
         COMMAND,
         SHIFT_CLICK,
         NOT_SHIFT_CLICK
+    }
+
+    public enum OutsideOverworld {
+        EXPLODE,
+        MONSTERS,
+        REST
     }
 
     // DO NOT USE OUTSIDE OF THIS CLASS!!!
@@ -58,9 +73,17 @@ public final class ComfyBedsConfig {
             NOT_SHIFT_CLICK
         }
 
+        public enum OutsideOverworld {
+            EXPLODE,
+            MONSTERS,
+            REST
+        }
+
         @Entry
         public static boolean allowRestAtDay = true;
         @Entry
         public static ChangeRespawn changeRespawn = ChangeRespawn.COMMAND;
+        @Entry
+        public static OutsideOverworld outsideOverworld = OutsideOverworld.MONSTERS;
     }
 }

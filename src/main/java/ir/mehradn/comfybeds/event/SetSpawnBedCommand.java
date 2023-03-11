@@ -2,6 +2,7 @@ package ir.mehradn.comfybeds.event;
 
 import com.mojang.brigadier.context.CommandContext;
 import ir.mehradn.comfybeds.config.ComfyBedsConfig;
+import ir.mehradn.comfybeds.util.mixin.ServerPlayerExpanded;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -22,9 +23,14 @@ public final class SetSpawnBedCommand {
             return 0;
         }
 
-        if (ComfyBedsConfig.getChangeRespawn() != ComfyBedsConfig.ChangeRespawn.COMMAND
-            || !player.isSleeping()
-            || player.getSleepingPos().isEmpty()) {
+        if (!((ServerPlayerExpanded)player).canSleepNaturally()) {
+            context.getSource().sendFailure(Component.translatable("comfy-beds.command.no_bed"));
+            return 0;
+        }
+
+        if (ComfyBedsConfig.getChangeRespawn() != ComfyBedsConfig.ChangeRespawn.COMMAND ||
+            !player.isSleeping() ||
+            player.getSleepingPos().isEmpty()) {
             context.getSource().sendSystemMessage(ComfyBedsConfig.getInstruction(false));
             return 0;
         }

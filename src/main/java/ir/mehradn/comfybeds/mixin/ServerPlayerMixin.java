@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import com.mojang.authlib.GameProfile;
 import com.mojang.datafixers.util.Either;
 import ir.mehradn.comfybeds.config.ComfyBedsConfig;
+import ir.mehradn.comfybeds.util.mixin.ServerPlayerExpanded;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -21,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
-public abstract class ServerPlayerMixin extends Player {
+public abstract class ServerPlayerMixin extends Player implements ServerPlayerExpanded {
     private boolean lyingDown = false;
 
     @Shadow public abstract void displayClientMessage(Component chatComponent, boolean actionBar);
@@ -32,9 +33,19 @@ public abstract class ServerPlayerMixin extends Player {
         super(level, blockPos, f, gameProfile);
     }
 
+    public boolean canSleepNaturally() {
+        return this.level.dimensionType().natural() && this.level.dimensionType().bedWorks();
+    }
+
+    public boolean isSleepingNaturally() {
+        return isSleeping() && canSleepNaturally() && !this.level.isDay();
+    }
+
     @WrapWithCondition(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerPlayer;setRespawnPosition(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/BlockPos;FZZ)V"))
     private boolean changeRespawnPointIf(ServerPlayer instance, ResourceKey<Level> dimension, BlockPos position,
                                          float angle, boolean forced, boolean sendMessage) {
+        if (!canSleepNaturally())
+            return false;
         boolean f;
         switch (ComfyBedsConfig.getChangeRespawn()) {
             case COMMAND -> f = false;
@@ -43,6 +54,11 @@ public abstract class ServerPlayerMixin extends Player {
             default -> f = true;
         }
         return f;
+    }
+
+    @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/dimension/DimensionType;natural()Z"))
+    private boolean allowRestOutsideOverworld(boolean natural) {
+        return ComfyBedsConfig.getOutsideOverworld() == ComfyBedsConfig.OutsideOverworld.REST || natural;
     }
 
     @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;isDay()Z"))
@@ -58,7 +74,8 @@ public abstract class ServerPlayerMixin extends Player {
 
     @Inject(method = "startSleepInBed", at = @At("RETURN"))
     private void informAboutChangingRespawnPoint(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
-        if (ci.getReturnValue().left().isPresent() ||
+        if (!canSleepNaturally() ||
+            ci.getReturnValue().left().isPresent() ||
             ComfyBedsConfig.getChangeRespawn() == ComfyBedsConfig.ChangeRespawn.NORMAL)
             return;
         this.sendSystemMessage(ComfyBedsConfig.getInstruction(true));
