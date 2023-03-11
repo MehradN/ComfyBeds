@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
-    private boolean falseSleeping = false;
+    private boolean lyingDown = false;
 
     @Shadow public abstract void displayClientMessage(Component chatComponent, boolean actionBar);
 
@@ -33,42 +33,42 @@ public abstract class ServerPlayerMixin extends Player {
     }
 
     @WrapWithCondition(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerPlayer;setRespawnPosition(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/BlockPos;FZZ)V"))
-    private boolean disableSetSpawn(ServerPlayer instance, ResourceKey<Level> dimension, BlockPos position,
-                                    float angle, boolean forced, boolean sendMessage) {
+    private boolean changeRespawnPointIf(ServerPlayer instance, ResourceKey<Level> dimension, BlockPos position,
+                                         float angle, boolean forced, boolean sendMessage) {
         boolean f;
-        switch (ComfyBedsConfig.setSpawnCondition()) {
+        switch (ComfyBedsConfig.getChangeRespawn()) {
             case COMMAND -> f = false;
             case SHIFT_CLICK -> f = this.isShiftKeyDown();
-            case NORMAL_CLICK -> f = !this.isShiftKeyDown();
+            case NOT_SHIFT_CLICK -> f = !this.isShiftKeyDown();
             default -> f = true;
         }
         return f;
     }
 
     @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;isDay()Z"))
-    private boolean disableDayRequirement(boolean isDay) {
-        return !ComfyBedsConfig.allowSleepAtDay() && isDay;
-    }
-
-    @Inject(method = "tick", at = @At("RETURN"))
-    private void fixFalseSleeping(CallbackInfo ci) {
-        if (this.falseSleeping && !this.level.isDay()) {
-            ((ServerLevel)this.level).updateSleepingPlayerList();
-            this.falseSleeping = false;
-        }
+    private boolean allowRestInDay(boolean isDay) {
+        return !ComfyBedsConfig.getAllowRestAtDay() && isDay;
     }
 
     @Inject(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;updateSleepingPlayerList()V"))
-    private void setFalseSleeping(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
+    private void startLyingDown(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
         if (this.level.isDay())
-            this.falseSleeping = true;
+            this.lyingDown = true;
     }
 
     @Inject(method = "startSleepInBed", at = @At("RETURN"))
-    private void informAboutSetSpawnCondition(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
+    private void informAboutChangingRespawnPoint(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
         if (ci.getReturnValue().left().isPresent() ||
-            ComfyBedsConfig.setSpawnCondition() == ComfyBedsConfig.SetSpawnCondition.NORMAL)
+            ComfyBedsConfig.getChangeRespawn() == ComfyBedsConfig.ChangeRespawn.NORMAL)
             return;
-        this.sendSystemMessage(ComfyBedsConfig.getSetSpawnInstruction());
+        this.sendSystemMessage(ComfyBedsConfig.getInstruction(true));
+    }
+
+    @Inject(method = "tick", at = @At("RETURN"))
+    private void startSleeping(CallbackInfo ci) {
+        if (this.lyingDown && !this.level.isDay()) {
+            ((ServerLevel)this.level).updateSleepingPlayerList();
+            this.lyingDown = false;
+        }
     }
 }

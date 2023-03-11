@@ -10,55 +10,57 @@ public final class ComfyBedsConfig {
         MidnightConfig.init("comfy-beds", _ComfyBedsConfig.class);
     }
 
-    public static boolean allowSleepAtDay() {
-        return _ComfyBedsConfig.allowSleepAtDay;
+    public static boolean getAllowRestAtDay() {
+        return _ComfyBedsConfig.allowRestAtDay;
     }
 
-    public static SetSpawnCondition setSpawnCondition() {
-        switch (_ComfyBedsConfig.setSpawnCondition) {
-            case NORMAL -> {return SetSpawnCondition.NORMAL;}
-            case COMMAND -> {return (allowSleepAtDay() ? SetSpawnCondition.COMMAND : SetSpawnCondition.NORMAL);}
-            case SHIFT_CLICK -> {return SetSpawnCondition.SHIFT_CLICK;}
-            case NORMAL_CLICK -> {return SetSpawnCondition.NORMAL_CLICK;}
+    public static ChangeRespawn getChangeRespawn() {
+        switch (_ComfyBedsConfig.changeRespawn) {
+            case NORMAL -> { return ChangeRespawn.NORMAL; }
+            case COMMAND -> { return (getAllowRestAtDay() ? ChangeRespawn.COMMAND : ChangeRespawn.NORMAL); }
+            case SHIFT_CLICK -> { return ChangeRespawn.SHIFT_CLICK; }
+            case NOT_SHIFT_CLICK -> { return ChangeRespawn.NOT_SHIFT_CLICK; }
         }
-        return SetSpawnCondition.NORMAL;
+        return ChangeRespawn.NORMAL;
     }
 
-    public static Component getSetSpawnInstruction() {
-        switch (ComfyBedsConfig.setSpawnCondition()) {
-            case NORMAL -> {return Component.translatable("comfy-beds.chatMessage.normal");}
+    public static Component getInstruction(boolean sleeping) {
+        switch (ComfyBedsConfig.getChangeRespawn()) {
+            case NORMAL -> { return Component.translatable("comfy-beds.command.normal"); }
+            case SHIFT_CLICK -> { return Component.translatable("comfy-beds.command.shiftClick"); }
+            case NOT_SHIFT_CLICK -> { return Component.translatable("comfy-beds.command.notShiftClick"); }
             case COMMAND -> {
-                Component here = Component.translatable("comfy-beds.chatMessage.here").setStyle(Style.EMPTY
+                if (!sleeping)
+                    return Component.translatable("comfy-beds.command.command");
+                Component here = Component.translatable("comfy-beds.command.here").setStyle(Style.EMPTY
                     .withUnderlined(true)
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/setspawnbed")));
-                return Component.translatable("comfy-beds.chatMessage.runCommand", here);
+                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/setbed")));
+                return Component.translatable("comfy-beds.command.clickHere", here);
             }
-            case SHIFT_CLICK -> {return Component.translatable("comfy-beds.chatMessage.shiftClick");}
-            case NORMAL_CLICK -> {return Component.translatable("comfy-beds.chatMessage.normalClick");}
         }
         return Component.empty();
     }
 
-    public enum SetSpawnCondition {
+    public enum ChangeRespawn {
         NORMAL,
         COMMAND,
         SHIFT_CLICK,
-        NORMAL_CLICK
+        NOT_SHIFT_CLICK
     }
 
     // DO NOT USE OUTSIDE OF THIS CLASS!!!
     // I'm forced to keep it public.
     public static final class _ComfyBedsConfig extends MidnightConfig {
-        public enum SetSpawnCondition {
+        public enum ChangeRespawn {
             NORMAL,
             COMMAND,
             SHIFT_CLICK,
-            NORMAL_CLICK
+            NOT_SHIFT_CLICK
         }
 
         @Entry
-        public static boolean allowSleepAtDay = true;
+        public static boolean allowRestAtDay = true;
         @Entry
-        public static SetSpawnCondition setSpawnCondition = SetSpawnCondition.COMMAND;
+        public static ChangeRespawn changeRespawn = ChangeRespawn.COMMAND;
     }
 }

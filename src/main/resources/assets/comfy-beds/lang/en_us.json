@@ -1,16 +1,15 @@
 {
-  "comfy-beds.command.onlyPlayer": "This command is only allowed to be run by a player.",
-  "comfy-beds.command.onlyOnBed": "Run this command while sleeping to set your spawn.",
-  "comfy-beds.chatMessage.normal": "Use a bed to set your spawn.",
-  "comfy-beds.chatMessage.here": "here",
-  "comfy-beds.chatMessage.runCommand": "Click %s to set your spawn.",
-  "comfy-beds.chatMessage.shiftClick": "Use the bed while sneaking to set your spawn.",
-  "comfy-beds.chatMessage.normalClick": "Use the bed while sneaking to sleep without setting your spawn.",
+  "comfy-beds.command.normal": "Use a bed to set your respawn point",
+  "comfy-beds.command.command": "Run this command while resting to set your respawn point",
+  "comfy-beds.command.shiftClick": "Use a bed while sneaking to set your respawn point",
+  "comfy-beds.command.notShiftClick": "Use a bed while sneaking to rest without setting your respawn point",
+  "comfy-beds.command.here": "here",
+  "comfy-beds.command.clickHere": "Click %s to set your respawn point",
   "comfy-beds.midnightconfig.title": "Comfy-Beds Options",
-  "comfy-beds.midnightconfig.allowSleepAtDay": "Allow Sleeping At Day:",
-  "comfy-beds.midnightconfig.setSpawnCondition": "Set Spawn Condition:",
-  "comfy-beds.midnightconfig.enum.SetSpawnCondition.NORMAL": "Normal",
-  "comfy-beds.midnightconfig.enum.SetSpawnCondition.COMMAND": "/setspawnbed",
-  "comfy-beds.midnightconfig.enum.SetSpawnCondition.SHIFT_CLICK": "Shift Click",
-  "comfy-beds.midnightconfig.enum.SetSpawnCondition.NORMAL_CLICK": "Don't Shift Click"
+  "comfy-beds.midnightconfig.allowRestAtDay": "Allow Resting During Day:",
+  "comfy-beds.midnightconfig.changeRespawn": "Changing Respawn Point:",
+  "comfy-beds.midnightconfig.enum.ChangeRespawn.NORMAL": "Normal",
+  "comfy-beds.midnightconfig.enum.ChangeRespawn.COMMAND": "/setbed",
+  "comfy-beds.midnightconfig.enum.ChangeRespawn.SHIFT_CLICK": "Shift Click",
+  "comfy-beds.midnightconfig.enum.ChangeRespawn.NOT_SHIFT_CLICK": "Don't Shift Click"
 }
