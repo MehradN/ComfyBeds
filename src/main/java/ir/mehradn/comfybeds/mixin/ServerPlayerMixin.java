@@ -76,6 +76,7 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerEx
     private void informAboutChangingRespawnPoint(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
         if (!canSleepNaturally() ||
             ci.getReturnValue().left().isPresent() ||
+            !ComfyBedsConfig.getProvideInstructions() ||
             ComfyBedsConfig.getChangeRespawn() == ComfyBedsConfig.ChangeRespawn.NORMAL)
             return;
         this.sendSystemMessage(ComfyBedsConfig.getInstruction(true));

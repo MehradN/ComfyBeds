@@ -24,6 +24,10 @@ public final class ComfyBedsConfig {
         return ChangeRespawn.NORMAL;
     }
 
+    public static boolean getProvideInstructions() {
+        return _ComfyBedsConfig.provideInstructions;
+    }
+
     public static Component getInstruction(boolean sleeping) {
         switch (ComfyBedsConfig.getChangeRespawn()) {
             case NORMAL -> { return Component.translatable("comfy-beds.command.normal"); }
@@ -45,7 +49,7 @@ public final class ComfyBedsConfig {
         switch (_ComfyBedsConfig.outsideOverworld) {
             case EXPLODE -> { return OutsideOverworld.EXPLODE; }
             case MONSTERS -> { return OutsideOverworld.MONSTERS; }
-            case REST -> { return OutsideOverworld.REST; }
+            case REST -> { return (getAllowRestAtDay() ? OutsideOverworld.REST : OutsideOverworld.MONSTERS); }
         }
         return OutsideOverworld.EXPLODE;
     }
@@ -83,6 +87,8 @@ public final class ComfyBedsConfig {
         public static boolean allowRestAtDay = true;
         @Entry
         public static ChangeRespawn changeRespawn = ChangeRespawn.COMMAND;
+        @Entry
+        public static boolean provideInstructions = true;
         @Entry
         public static OutsideOverworld outsideOverworld = OutsideOverworld.MONSTERS;
     }
