@@ -3,15 +3,15 @@
 	"id": "comfy-beds",
 	"version": "${version}",
 	"name": "Comfy-Beds",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "This mod will add some quality-of-life features to beds.",
 	"authors": [
-		"Me!"
+		"Mehrad Nayyeri"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/MehradN/ComfyBeds",
+		"sources": "https://github.com/MehradN/ComfyBeds"
 	},
-	"license": "CC0-1.0",
+	"license": "GPL-3.0",
 	"icon": "assets/comfy-beds/icon.png",
 	"environment": "*",
 	"entrypoints": {
