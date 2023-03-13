@@ -1,5 +1,5 @@
 # Comfy-Beds
-This Minecraft mod will add some quality-of-life features to beds.
+This Minecraft mod adds some quality-of-life features to beds.
 - Resting during the day
 - Disabling bed explosion
 - Resting outside of Overworld
