@@ -14,6 +14,6 @@ This mod allows you to rest in other dimensions such as the Nether.
 ![Resting in other dimensions](https://raw.githubusercontent.com/MehradN/ComfyBeds/master/screenshots/RestingInNether.png)
 
 ## Config Screen
-**Powered By Midnightlib**
+**Powered By MehradConfig**
 
 ![Config Screen](https://raw.githubusercontent.com/MehradN/ComfyBeds/master/screenshots/ConfigScreen.png)
