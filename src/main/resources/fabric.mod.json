@@ -12,7 +12,7 @@
     "sources": "https://github.com/MehradN/ComfyBeds",
     "issues": "https://github.com/MehradN/ComfyBeds/issues"
   },
-  "license": "GPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "icon": "assets/comfy-beds/icon.png",
   "environment": "*",
   "entrypoints": {
