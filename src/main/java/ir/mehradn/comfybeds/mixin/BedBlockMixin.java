@@ -25,15 +25,15 @@ public abstract class BedBlockMixin extends HorizontalDirectionalBlock implement
 
     @ModifyReturnValue(method = "canSetSpawn", at = @At("RETURN"))
     private static boolean allowRestOutsideOverworld(boolean original) {
-        return ComfyBedsConfig.getOutsideOverworld() == ComfyBedsConfig.OutsideOverworld.REST || original;
+        return ComfyBedsConfig.loadedConfig.outsideOverworld.get() == ComfyBedsConfig.OutsideOverworld.REST || original;
     }
 
     @Inject(method = "use", cancellable = true, at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
     private void disableBedExplosion(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit,
                                      CallbackInfoReturnable<InteractionResult> ci) {
-        if (ComfyBedsConfig.getOutsideOverworld() == ComfyBedsConfig.OutsideOverworld.MONSTERS)
+        if (ComfyBedsConfig.loadedConfig.outsideOverworld.get() == ComfyBedsConfig.OutsideOverworld.MONSTERS)
             player.displayClientMessage(Player.BedSleepingProblem.NOT_SAFE.getMessage(), true);
-        if (ComfyBedsConfig.getOutsideOverworld() != ComfyBedsConfig.OutsideOverworld.EXPLODE)
+        if (ComfyBedsConfig.loadedConfig.outsideOverworld.get() != ComfyBedsConfig.OutsideOverworld.EXPLODE)
             ci.setReturnValue(InteractionResult.SUCCESS);
     }
 }

@@ -17,6 +17,6 @@ public abstract class PlayerMixin extends LivingEntity {
 
     @WrapWithCondition(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;stopSleepInBed(ZZ)V"))
     private boolean disableAutoWakeup(Player instance, boolean wakeImmediately, boolean updateLevelForSleepingPlayers) {
-        return !ComfyBedsConfig.getAllowRestAtDay();
+        return !ComfyBedsConfig.loadedConfig.allowRestAtDay.get();
     }
 }

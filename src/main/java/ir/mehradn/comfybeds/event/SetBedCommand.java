@@ -9,33 +9,30 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
-public final class SetSpawnBedCommand {
+public final class SetBedCommand {
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
             dispatcher.register(Commands.literal("setbed")
-                .executes(SetSpawnBedCommand::setSpawnBed)));
+                .requires(CommandSourceStack::isPlayer)
+                .executes(SetBedCommand::setSpawnBed)));
     }
 
     public static int setSpawnBed(CommandContext<CommandSourceStack> context) {
         ServerPlayer player = context.getSource().getPlayer();
-        if (player == null) {
-            context.getSource().sendFailure(Component.literal("This command can only be used by a player"));
-            return 0;
-        }
+        assert player != null;
 
         if (!((ServerPlayerExpanded)player).canSleepNaturally()) {
             context.getSource().sendFailure(Component.translatable("comfy-beds.command.no_bed"));
             return 0;
         }
 
-        if (ComfyBedsConfig.getChangeRespawn() != ComfyBedsConfig.ChangeRespawn.COMMAND ||
-            !player.isSleeping() ||
-            player.getSleepingPos().isEmpty()) {
-            context.getSource().sendSystemMessage(ComfyBedsConfig.getInstruction(false));
+        if (ComfyBedsConfig.loadedConfig.changeRespawn.get() != ComfyBedsConfig.ChangeRespawn.COMMAND ||
+            !player.isSleeping() || player.getSleepingPos().isEmpty()) {
+            context.getSource().sendSystemMessage(ComfyBedsConfig.loadedConfig.getInstruction(false));
             return 0;
         }
 
-        player.setRespawnPosition(player.level.dimension(), player.getSleepingPos().get(), player.getYRot(), false, true);
+        player.setRespawnPosition(player.level().dimension(), player.getSleepingPos().get(), player.getYRot(), false, true);
         return 1;
     }
 }

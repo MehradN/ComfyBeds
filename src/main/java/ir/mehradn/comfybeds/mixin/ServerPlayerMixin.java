@@ -25,20 +25,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ServerPlayerMixin extends Player implements ServerPlayerExpanded {
     private boolean lyingDown = false;
 
-    @Shadow public abstract void displayClientMessage(Component chatComponent, boolean actionBar);
-
-    @Shadow public abstract void sendSystemMessage(Component component);
-
     public ServerPlayerMixin(Level level, BlockPos blockPos, float f, GameProfile gameProfile) {
         super(level, blockPos, f, gameProfile);
     }
 
+    @Shadow public abstract void displayClientMessage(Component chatComponent, boolean actionBar);
+
+    @Shadow public abstract void sendSystemMessage(Component component);
+
+    @Override
     public boolean canSleepNaturally() {
-        return this.level.dimensionType().natural() && this.level.dimensionType().bedWorks();
+        return level().dimensionType().natural() && level().dimensionType().bedWorks();
     }
 
+    @Override
     public boolean isSleepingNaturally() {
-        return isSleeping() && canSleepNaturally() && !this.level.isDay();
+        return isSleeping() && canSleepNaturally() && !level().isDay();
     }
 
     @WrapWithCondition(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/server/level/ServerPlayer;setRespawnPosition(Lnet/minecraft/resources/ResourceKey;Lnet/minecraft/core/BlockPos;FZZ)V"))
@@ -47,7 +49,7 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerEx
         if (!canSleepNaturally())
             return false;
         boolean f;
-        switch (ComfyBedsConfig.getChangeRespawn()) {
+        switch (ComfyBedsConfig.loadedConfig.changeRespawn.get()) {
             case COMMAND -> f = false;
             case SHIFT_CLICK -> f = this.isShiftKeyDown();
             case NOT_SHIFT_CLICK -> f = !this.isShiftKeyDown();
@@ -58,17 +60,17 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerEx
 
     @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/dimension/DimensionType;natural()Z"))
     private boolean allowRestOutsideOverworld(boolean natural) {
-        return ComfyBedsConfig.getOutsideOverworld() == ComfyBedsConfig.OutsideOverworld.REST || natural;
+        return ComfyBedsConfig.loadedConfig.outsideOverworld.get() == ComfyBedsConfig.OutsideOverworld.REST || natural;
     }
 
     @ModifyExpressionValue(method = "startSleepInBed", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/level/Level;isDay()Z"))
     private boolean allowRestInDay(boolean isDay) {
-        return !ComfyBedsConfig.getAllowRestAtDay() && isDay;
+        return !ComfyBedsConfig.loadedConfig.allowRestAtDay.get() && isDay;
     }
 
     @Inject(method = "startSleepInBed", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;updateSleepingPlayerList()V"))
     private void startLyingDown(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
-        if (this.level.isDay())
+        if (level().isDay())
             this.lyingDown = true;
     }
 
@@ -76,16 +78,16 @@ public abstract class ServerPlayerMixin extends Player implements ServerPlayerEx
     private void informAboutChangingRespawnPoint(CallbackInfoReturnable<Either<BedSleepingProblem, Unit>> ci) {
         if (!canSleepNaturally() ||
             ci.getReturnValue().left().isPresent() ||
-            !ComfyBedsConfig.getProvideInstructions() ||
-            ComfyBedsConfig.getChangeRespawn() == ComfyBedsConfig.ChangeRespawn.NORMAL)
+            !ComfyBedsConfig.loadedConfig.provideInstructions.get() ||
+            ComfyBedsConfig.loadedConfig.changeRespawn.get() == ComfyBedsConfig.ChangeRespawn.NORMAL)
             return;
-        this.sendSystemMessage(ComfyBedsConfig.getInstruction(true));
+        this.sendSystemMessage(ComfyBedsConfig.loadedConfig.getInstruction(true));
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
     private void startSleeping(CallbackInfo ci) {
-        if (this.lyingDown && !this.level.isDay()) {
-            ((ServerLevel)this.level).updateSleepingPlayerList();
+        if (this.lyingDown && !level().isDay()) {
+            ((ServerLevel)level()).updateSleepingPlayerList();
             this.lyingDown = false;
         }
     }
