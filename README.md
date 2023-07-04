@@ -1,6 +1,7 @@
 # Comfy-Beds
 [![GitHub Repo stars](https://img.shields.io/github/stars/MehradN/ComfyBeds?style=flat-square&logo=github&label=github)](https://github.com/MehradN/ComfyBeds)
 [![Modrinth Downloads](https://img.shields.io/modrinth/dt/comfy-beds?style=flat-square&logo=modrinth&label=modrinth)](https://modrinth.com/mod/comfy-beds)
+[![CurseForge Downloads](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.cfwidget.com%2F883657&query=%24.downloads.total&style=flat-square&logo=curseforge&logoColor=orange&label=curseforge&color=pink)](https://www.curseforge.com/minecraft/mc-mods/comfy-beds)
 [![Discord](https://img.shields.io/discord/1124688511358992426?style=flat-square&logo=discord&label=discord)](https://discord.gg/8ZbPdJ7SJd)
 
 Comfy-Beds adds some quality-of-life features to beds in Minecraft.
